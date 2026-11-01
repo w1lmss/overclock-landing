@@ -118,3 +118,4 @@ export function HeroParticles({ flavor }: HeroParticlesProps) {
     />
   );
 }
+
