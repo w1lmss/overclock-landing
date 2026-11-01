@@ -148,3 +148,4 @@ export function Navbar({ currentFlavor }: NavbarProps) {
     </header>
   );
 }
+

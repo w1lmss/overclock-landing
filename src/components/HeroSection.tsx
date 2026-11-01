@@ -1,8 +1,20 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { Flavor } from "@/types/flavor";
-import { CanGraphic } from "./CanGraphic";
+
+const CanScene = dynamic(
+  () => import("./CanScene").then((mod) => mod.CanScene),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[400px] sm:h-[480px] md:h-[560px] flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-accent animate-spin" />
+      </div>
+    ),
+  }
+);
 
 interface HeroSectionProps {
   currentFlavor: Flavor;
@@ -24,10 +36,10 @@ export function HeroSection({ currentFlavor }: HeroSectionProps) {
     >
       {/* Background Ambient Glows */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[700px] h-[350px] sm:h-[500px] md:h-[700px] rounded-full blur-[120px] pointer-events-none opacity-25 transition-all duration-700"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[700px] h-[350px] sm:h-[500px] md:h-[700px] rounded-full blur-[130px] pointer-events-none opacity-25 transition-all duration-700"
         style={{ backgroundColor: currentFlavor.color }}
       />
-      
+
       {/* Subtle grid pattern overlay for high-tech aesthetic */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
@@ -52,9 +64,9 @@ export function HeroSection({ currentFlavor }: HeroSectionProps) {
           Push past your limits.
         </p>
 
-        {/* 3D Can Representation (Stage 1 placeholder graphic) */}
-        <div className="my-8 sm:my-10 relative flex items-center justify-center">
-          <CanGraphic flavor={currentFlavor} size="lg" />
+        {/* 3D CAN (Stage 2: Real Three.js Canvas with R3F) */}
+        <div className="my-4 sm:my-6 relative flex items-center justify-center w-full">
+          <CanScene flavor={currentFlavor} />
         </div>
 
         {/* Action Button */}

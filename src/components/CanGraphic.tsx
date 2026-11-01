@@ -196,3 +196,4 @@ export function CanGraphic({ flavor, className = "", size = "lg" }: CanGraphicPr
     </div>
   );
 }
+
