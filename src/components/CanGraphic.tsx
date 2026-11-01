@@ -19,10 +19,6 @@ export function CanGraphic({ flavor, className = "", size = "lg" }: CanGraphicPr
   return (
     <div
       className={`relative flex items-center justify-center select-none ${dimensions} ${className}`}
-      style={{
-        filter: `drop-shadow(0 20px 40px ${flavor.glowColor})`,
-        transition: "filter 0.6s ease",
-      }}
     >
       <svg
         viewBox="0 0 240 540"

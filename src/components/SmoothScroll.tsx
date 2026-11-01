@@ -21,8 +21,9 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
     // Register GSAP ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
 
-    // Initialize Lenis smooth scroll
+    // Initialize Lenis smooth scroll on unified GSAP ticker
     const lenis = new Lenis({
+      autoRaf: false,
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",

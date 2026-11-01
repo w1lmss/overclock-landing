@@ -17,13 +17,27 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://overclock-landing.vercel.app"),
   title: "OVERCLOCK — Push past your limits",
   description:
-    "Next-generation energy drink with zero sugar, natural caffeine, and B-vitamins. Fuel for focus and high performance.",
+    "High-performance energy drink with zero sugar, 160 mg natural caffeine, and B-vitamins. Fuel for focus and high performance.",
   keywords: ["energy drink", "overclock", "zero sugar", "natural caffeine", "gaming", "performance"],
   authors: [{ name: "OVERCLOCK Energy" }],
   icons: {
     icon: "/favicon.ico",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://overclock-landing.vercel.app",
+    siteName: "OVERCLOCK",
+    title: "OVERCLOCK — Push past your limits",
+    description: "High-performance energy drink with zero sugar, 160 mg natural caffeine, and B-vitamins.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OVERCLOCK — Push past your limits",
+    description: "High-performance energy drink with zero sugar, 160 mg natural caffeine, and B-vitamins.",
   },
 };
 

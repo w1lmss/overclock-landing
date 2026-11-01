@@ -4,19 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flavor } from "@/types/flavor";
-import dynamic from "next/dynamic";
-
-const CanScene = dynamic(
-  () => import("./CanScene").then((mod) => mod.CanScene),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-48 h-72 sm:w-60 sm:h-80 flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-accent animate-spin" />
-      </div>
-    ),
-  }
-);
+import { CanGraphic } from "./CanGraphic";
 
 interface WhySectionProps {
   currentFlavor: Flavor;
@@ -155,10 +143,12 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
       id="why-overclock"
       className="relative min-h-screen border-t border-white/5 overflow-hidden"
     >
-      {/* Background glow */}
+      {/* Background glow: performant CSS radial gradient without blur filter */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none opacity-20 transition-all duration-700"
-        style={{ backgroundColor: currentFlavor.color }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none opacity-15"
+        style={{
+          background: `radial-gradient(circle, ${currentFlavor.color} 0%, transparent 70%)`,
+        }}
       />
 
       {/* Pinned Viewport Container */}
@@ -170,13 +160,13 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
             <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent">
-              Pinned Performance Matrix
+              Core Formula
             </span>
             <h2 className="mt-3 text-3xl sm:text-5xl font-black uppercase font-heading tracking-tight text-white">
               Why OVERCLOCK
             </h2>
             <p className="mt-3 text-zinc-400 text-sm sm:text-base">
-              Explore four core advantages engineered into every drop.
+              Four core advantages engineered into every drop.
             </p>
 
             {/* Step Progress Indicators */}
@@ -184,9 +174,9 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
               {benefits.map((b, i) => (
                 <div
                   key={b.id}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                  className={`h-1.5 rounded-full transition-[width,background-color] duration-300 ${
                     i === activeStep
-                      ? "w-10 bg-accent shadow-sm"
+                      ? "w-10 bg-accent"
                       : "w-3 bg-white/20"
                   }`}
                   style={i === activeStep ? { backgroundColor: currentFlavor.color } : undefined}
@@ -207,16 +197,15 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
                     ref={(el) => {
                       cardsRef.current[idx] = el;
                     }}
-                    className={`rounded-2xl p-6 sm:p-7 border transition-all duration-500 ${
+                    className={`rounded-2xl p-6 sm:p-7 border transition-[border-color,opacity,transform] duration-250 ${
                       isActive
-                        ? "bg-white/[0.06] border-white/40 shadow-2xl scale-[1.02]"
+                        ? "bg-white/[0.06] border-white/40 scale-[1.02]"
                         : "bg-white/[0.02] border-white/10 opacity-60 lg:opacity-30"
                     }`}
                     style={
                       isActive
                         ? {
                             borderColor: currentFlavor.color,
-                            boxShadow: `0 0 30px ${currentFlavor.glowColor}`,
                           }
                         : undefined
                     }
@@ -242,10 +231,10 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
               })}
             </div>
 
-            {/* Center 3D Can Showcase */}
+            {/* Center Can Showcase (Using performant vector can graphic to preserve single WebGL canvas rule) */}
             <div className="lg:col-span-4 flex items-center justify-center my-4 lg:my-0">
-              <div className="relative w-full max-w-[320px] sm:max-w-[380px]">
-                <CanScene flavor={currentFlavor} className="!h-[360px] sm:!h-[440px]" />
+              <div className="relative w-full max-w-[320px] sm:max-w-[380px] flex justify-center">
+                <CanGraphic flavor={currentFlavor} size="md" />
               </div>
             </div>
 
@@ -260,16 +249,15 @@ export function WhySection({ currentFlavor }: WhySectionProps) {
                     ref={(el) => {
                       cardsRef.current[realIdx] = el;
                     }}
-                    className={`rounded-2xl p-6 sm:p-7 border transition-all duration-500 ${
+                    className={`rounded-2xl p-6 sm:p-7 border transition-[border-color,opacity,transform] duration-250 ${
                       isActive
-                        ? "bg-white/[0.06] border-white/40 shadow-2xl scale-[1.02]"
+                        ? "bg-white/[0.06] border-white/40 scale-[1.02]"
                         : "bg-white/[0.02] border-white/10 opacity-60 lg:opacity-30"
                     }`}
                     style={
                       isActive
                         ? {
                             borderColor: currentFlavor.color,
-                            boxShadow: `0 0 30px ${currentFlavor.glowColor}`,
                           }
                         : undefined
                     }

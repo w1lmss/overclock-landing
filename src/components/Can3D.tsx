@@ -140,13 +140,11 @@ export function Can3D({ flavor }: Can3DProps) {
 
   return (
     <group ref={groupRef} position={[0, 0, 0]} scale={[1, 1, 1]}>
-      {/* CAN BODY (Main label cylinder) */}
+      {/* CAN BODY (Main label cylinder - 64 segments per customer specs, no costly real-time shadows) */}
       <mesh
         ref={bodyMeshRef}
         material={bodyMaterial}
         position={[0, 0, 0]}
-        castShadow
-        receiveShadow
       >
         <cylinderGeometry args={[1, 1, 3.1, 64, 1, true]} />
       </mesh>
@@ -155,7 +153,6 @@ export function Can3D({ flavor }: Can3DProps) {
       <mesh
         material={aluminumMaterial}
         position={[0, 1.7, 0]}
-        castShadow
       >
         <cylinderGeometry args={[0.85, 1.0, 0.3, 64]} />
       </mesh>
@@ -164,7 +161,6 @@ export function Can3D({ flavor }: Can3DProps) {
       <mesh
         material={aluminumMaterial}
         position={[0, 1.88, 0]}
-        castShadow
       >
         <cylinderGeometry args={[0.86, 0.86, 0.06, 64]} />
       </mesh>
@@ -173,7 +169,6 @@ export function Can3D({ flavor }: Can3DProps) {
       <mesh
         material={darkAluminumMaterial}
         position={[0, 1.86, 0]}
-        receiveShadow
       >
         <cylinderGeometry args={[0.83, 0.83, 0.02, 64]} />
       </mesh>
@@ -192,7 +187,6 @@ export function Can3D({ flavor }: Can3DProps) {
       <mesh
         material={aluminumMaterial}
         position={[0, -1.7, 0]}
-        castShadow
       >
         <cylinderGeometry args={[1.0, 0.82, 0.3, 64]} />
       </mesh>

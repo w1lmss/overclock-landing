@@ -1,27 +1,42 @@
 "use client";
 
-import React from "react";
+import React, { useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { Flavor } from "@/types/flavor";
 import { HeroParticles } from "./HeroParticles";
+import { CanGraphic } from "./CanGraphic";
 
+// Dynamic import with static CanGraphic as instant loading skeleton
 const CanScene = dynamic(
   () => import("./CanScene").then((mod) => mod.CanScene),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-[400px] sm:h-[480px] md:h-[560px] flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-2 border-white/20 border-t-accent animate-spin" />
+      <div className="w-full flex items-center justify-center">
+        <div className="w-64 sm:w-72 md:w-80 h-[460px] sm:h-[520px] md:h-[580px] opacity-90" />
       </div>
     ),
   }
 );
+
+function useIsDesktopClient() {
+  return useSyncExternalStore(
+    (callback) => {
+      window.addEventListener("resize", callback);
+      return () => window.removeEventListener("resize", callback);
+    },
+    () => window.innerWidth >= 768,
+    () => false
+  );
+}
 
 interface HeroSectionProps {
   currentFlavor: Flavor;
 }
 
 export function HeroSection({ currentFlavor }: HeroSectionProps) {
+  const isDesktop = useIsDesktopClient();
+
   const scrollToFlavors = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const element = document.getElementById("flavors");
@@ -35,27 +50,29 @@ export function HeroSection({ currentFlavor }: HeroSectionProps) {
       id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      {/* Background Ambient Glows */}
+      {/* Background radial glow: using performant radial-gradient without costly blur filters */}
       <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[700px] h-[350px] sm:h-[500px] md:h-[700px] rounded-full blur-[130px] pointer-events-none opacity-25 transition-all duration-700"
-        style={{ backgroundColor: currentFlavor.color }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[700px] h-[350px] sm:h-[500px] md:h-[700px] rounded-full pointer-events-none opacity-20"
+        style={{
+          background: `radial-gradient(circle, ${currentFlavor.color} 0%, transparent 70%)`,
+        }}
       />
 
-      {/* Subtle grid pattern overlay for high-tech aesthetic */}
+      {/* Subtle grid pattern overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      {/* Ambient floating glowing particles (Stage 3 per TZ) */}
+      {/* Floating glowing particles in WebGL / 2D Canvas */}
       <HeroParticles flavor={currentFlavor} />
 
       {/* Hero Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">
-        {/* Overclock Category Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm font-semibold tracking-wider text-zinc-300 uppercase mb-4 backdrop-blur-sm">
+        {/* Category Pill (simplified per customer feedback) */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm font-semibold tracking-wider text-zinc-300 uppercase mb-4">
           <span
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: currentFlavor.color }}
           />
-          Next-Gen Energy Formula
+          Energy Formula
         </div>
 
         {/* Big Bold Headline */}
@@ -68,9 +85,16 @@ export function HeroSection({ currentFlavor }: HeroSectionProps) {
           Push past your limits.
         </p>
 
-        {/* 3D CAN (Stage 2: Real Three.js Canvas with R3F) */}
-        <div className="my-4 sm:my-6 relative flex items-center justify-center w-full">
-          <CanScene flavor={currentFlavor} />
+        {/* Can Presentation:
+            - On desktop: Single WebGL 3D Canvas with mouse tilt and spin
+            - On mobile: Crisp static vector CanGraphic (0 lag, instant 60 FPS)
+            - During SSR / before mount: CanGraphic for immediate First Contentful Paint */}
+        <div className="my-4 sm:my-6 relative flex items-center justify-center w-full min-h-[460px] sm:min-h-[520px]">
+          {isDesktop ? (
+            <CanScene flavor={currentFlavor} />
+          ) : (
+            <CanGraphic flavor={currentFlavor} size="lg" />
+          )}
         </div>
 
         {/* Action Button */}

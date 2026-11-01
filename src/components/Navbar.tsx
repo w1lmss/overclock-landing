@@ -21,9 +21,9 @@ export function Navbar({ currentFlavor }: NavbarProps) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
         scrolled
-          ? "bg-[#0A0A0F]/85 backdrop-blur-md border-b border-white/10 py-3.5 shadow-lg shadow-black/50"
+          ? "bg-[#0A0A0F]/95 border-b border-white/10 py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -62,7 +62,7 @@ export function Navbar({ currentFlavor }: NavbarProps) {
         <div className="hidden sm:flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-zinc-300">
             <span
-              className="w-2 h-2 rounded-full animate-pulse"
+              className="w-2 h-2 rounded-full"
               style={{ backgroundColor: currentFlavor.color }}
             />
             <span className="font-medium tracking-wide">
@@ -74,7 +74,7 @@ export function Navbar({ currentFlavor }: NavbarProps) {
             href="#where-to-buy"
             className="px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider text-black bg-accent neon-glow-btn"
           >
-            Get Can
+            Get a can
           </a>
         </div>
 
@@ -112,7 +112,7 @@ export function Navbar({ currentFlavor }: NavbarProps) {
 
       {/* Mobile dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0A0A0F]/95 backdrop-blur-xl border-b border-white/10 px-6 py-5 flex flex-col gap-4 text-base font-medium">
+        <div className="md:hidden bg-[#0A0A0F]/98 border-b border-white/10 px-6 py-5 flex flex-col gap-4 text-base font-medium">
           <a
             href="#flavors"
             onClick={() => setMobileMenuOpen(false)}
@@ -148,4 +148,3 @@ export function Navbar({ currentFlavor }: NavbarProps) {
     </header>
   );
 }
-

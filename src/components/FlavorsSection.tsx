@@ -96,23 +96,25 @@ export function FlavorsSection({
       id="flavors"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden"
     >
-      {/* Background radial gradient reflecting active flavor */}
+      {/* Background radial glow: performant CSS radial gradient without heavy blur filters */}
       <div
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[400px] rounded-full blur-[140px] pointer-events-none opacity-20 transition-all duration-700"
-        style={{ backgroundColor: currentFlavor.color }}
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] md:w-[800px] h-[400px] rounded-full pointer-events-none opacity-15"
+        style={{
+          background: `radial-gradient(circle, ${currentFlavor.color} 0%, transparent 70%)`,
+        }}
       />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent">
-            Triple Formula
+            Lineup
           </span>
           <h2 className="mt-3 text-3xl sm:text-5xl font-black uppercase font-heading tracking-tight text-white">
             Choose Your Flavor
           </h2>
           <p className="mt-4 text-zinc-400 text-sm sm:text-base">
-            Select a flavor to preview the formula, tune the atmosphere, and charge up.
+            Pick your flavor.
           </p>
         </div>
 
@@ -125,16 +127,15 @@ export function FlavorsSection({
                 key={flavor.id}
                 type="button"
                 onClick={() => onSelectFlavor(flavor.id)}
-                className={`flex items-center gap-3 px-5 sm:px-7 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
+                className={`flex items-center gap-3 px-5 sm:px-7 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider transition-transform duration-200 ${
                   isSelected
-                    ? "bg-white text-black shadow-lg shadow-white/10 scale-105"
+                    ? "bg-white text-black scale-105"
                     : "bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 border border-white/10"
                 }`}
                 style={
                   isSelected
                     ? {
                         backgroundColor: flavor.color,
-                        boxShadow: `0 0 25px ${flavor.glowColor}`,
                       }
                     : undefined
                 }
@@ -160,16 +161,15 @@ export function FlavorsSection({
                   cardsRef.current[index] = el;
                 }}
                 onClick={() => onSelectFlavor(flavor.id)}
-                className={`group relative rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-500 border ${
+                className={`group relative rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center cursor-pointer transition-[border-color,transform] duration-250 border ${
                   isActive
-                    ? "bg-white/[0.04] border-white/30 shadow-2xl scale-[1.02]"
-                    : "bg-white/[0.02] border-white/10 hover:border-white/20 hover:bg-white/[0.03]"
+                    ? "bg-white/[0.04] border-white/40 scale-[1.02]"
+                    : "bg-white/[0.02] border-white/10 hover:border-white/25 hover:bg-white/[0.03]"
                 }`}
                 style={
                   isActive
                     ? {
                         borderColor: flavor.color,
-                        boxShadow: `0 0 35px ${flavor.glowColor}`,
                       }
                     : undefined
                 }
@@ -197,16 +197,16 @@ export function FlavorsSection({
                 </div>
 
                 {/* Mini Can Graphic */}
-                <div className="py-4 my-2 transition-transform duration-500 group-hover:scale-105">
+                <div className="py-4 my-2 transition-transform duration-300 group-hover:scale-105">
                   <CanGraphic flavor={flavor} size="sm" />
                 </div>
 
-                {/* Flavor Title & Texts from TZ */}
+                {/* Flavor Title & Texts from TZ (no quotes) */}
                 <h3 className="mt-4 text-xl sm:text-2xl font-black uppercase font-heading text-white tracking-wide">
                   {flavor.name}
                 </h3>
                 <p className="mt-2 text-sm sm:text-base font-medium text-zinc-300 min-h-[48px] flex items-center justify-center">
-                  «{flavor.tagline}»
+                  {flavor.tagline}
                 </p>
 
                 {/* Specs from TZ */}

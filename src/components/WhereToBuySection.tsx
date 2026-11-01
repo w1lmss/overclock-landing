@@ -12,7 +12,6 @@ interface WhereToBuyProps {
 export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [storeFeedback, setStoreFeedback] = useState<string | null>(null);
 
   const sectionRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -99,11 +98,14 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
     setIsSubmitted(true);
   };
 
-  const handleStoreClick = (storeName: string) => {
-    setStoreFeedback(`Redirecting to ${storeName} partner portal...`);
-    setTimeout(() => {
-      setStoreFeedback(null);
-    }, 3000);
+  // As required by customer fixes: fictional store buttons lead directly to preorder/subscribe form
+  const handleStoreClick = () => {
+    const formElement = document.getElementById("subscription-form");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: "smooth" });
+      const input = formElement.querySelector("input");
+      if (input) input.focus();
+    }
   };
 
   return (
@@ -112,17 +114,19 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
       id="where-to-buy"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden"
     >
-      {/* Background glow */}
+      {/* Background glow: performant CSS radial gradient without blur filter */}
       <div
-        className="absolute bottom-10 right-1/4 w-[400px] h-[400px] rounded-full blur-[140px] pointer-events-none opacity-20 transition-all duration-700"
-        style={{ backgroundColor: currentFlavor.color }}
+        className="absolute bottom-10 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none opacity-15"
+        style={{
+          background: `radial-gradient(circle, ${currentFlavor.color} 0%, transparent 70%)`,
+        }}
       />
 
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-16">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent">
-            Distribution Network
+            Availability
           </span>
           <h2 className="mt-3 text-3xl sm:text-5xl font-black uppercase font-heading tracking-tight text-white">
             Grab a can
@@ -138,8 +142,8 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
             <button
               key={store.name}
               type="button"
-              onClick={() => handleStoreClick(store.name)}
-              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/40 hover:bg-white/[0.06] text-left transition-all duration-300 relative overflow-hidden flex flex-col justify-between neon-border-box"
+              onClick={handleStoreClick}
+              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/35 hover:bg-white/[0.06] text-left transition-[border-color,background-color,transform] duration-200 relative overflow-hidden flex flex-col justify-between cursor-pointer"
             >
               <div>
                 <div className="flex justify-between items-center mb-2">
@@ -147,7 +151,7 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
                     {store.tag}
                   </span>
                   <svg
-                    className="w-4 h-4 text-zinc-500 group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all"
+                    className="w-4 h-4 text-zinc-500 group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -168,23 +172,17 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
 
               <span className="mt-6 text-xs font-semibold uppercase tracking-wider text-accent inline-flex items-center gap-1.5">
                 Visit Store
-                <span className="transition-transform group-hover:translate-x-1">→</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
               </span>
             </button>
           ))}
         </div>
 
-        {/* Store click toast feedback */}
-        {storeFeedback && (
-          <div className="mb-8 p-3 rounded-xl bg-white/10 border border-white/20 text-center text-xs font-medium text-zinc-300 animate-fade-in">
-            {storeFeedback}
-          </div>
-        )}
-
         {/* Email Subscription Form Box */}
         <div
+          id="subscription-form"
           ref={formBoxRef}
-          className="rounded-3xl p-8 sm:p-12 bg-white/[0.02] border border-white/10 relative overflow-hidden neon-border-box"
+          className="rounded-3xl p-8 sm:p-12 bg-white/[0.02] border border-white/10 relative overflow-hidden"
         >
           <div className="max-w-xl mx-auto text-center">
             <h3 className="text-2xl sm:text-3xl font-black uppercase font-heading text-white tracking-wide">
@@ -221,7 +219,7 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
                     setIsSubmitted(false);
                     setEmail("");
                   }}
-                  className="mt-2 text-xs text-zinc-400 underline hover:text-white"
+                  className="mt-2 text-xs text-zinc-400 underline hover:text-white cursor-pointer"
                 >
                   Register another email
                 </button>
