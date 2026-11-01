@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flavor } from "@/types/flavor";
 
 interface WhereToBuyProps {
@@ -12,11 +14,84 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [storeFeedback, setStoreFeedback] = useState<string | null>(null);
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const storesRef = useRef<HTMLDivElement>(null);
+  const formBoxRef = useRef<HTMLDivElement>(null);
+
   const fictionalStores = [
     { name: "CYBERMART", city: "Global Delivery", tag: "Fast Shipping" },
     { name: "NEON DROP", city: "Flagship Stores", tag: "In-Store Pickup" },
     { name: "APEX HYPER", city: "24/7 Online", tag: "Exclusive Cases" },
   ];
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const ctx = gsap.context(() => {
+      // Header reveal
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Store buttons reveal
+      if (storesRef.current) {
+        gsap.fromTo(
+          storesRef.current.children,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: storesRef.current,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Form box reveal
+      if (formBoxRef.current) {
+        gsap.fromTo(
+          formBoxRef.current,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: formBoxRef.current,
+              start: "top 90%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +108,7 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
 
   return (
     <section
+      ref={sectionRef}
       id="where-to-buy"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden"
     >
@@ -44,7 +120,7 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
 
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-16">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent">
             Distribution Network
           </span>
@@ -57,13 +133,13 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
         </div>
 
         {/* 3 Fictional Stores Buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-16">
+        <div ref={storesRef} className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-16">
           {fictionalStores.map((store) => (
             <button
               key={store.name}
               type="button"
               onClick={() => handleStoreClick(store.name)}
-              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:bg-white/[0.06] text-left transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
+              className="group p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/40 hover:bg-white/[0.06] text-left transition-all duration-300 relative overflow-hidden flex flex-col justify-between neon-border-box"
             >
               <div>
                 <div className="flex justify-between items-center mb-2">
@@ -106,7 +182,10 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
         )}
 
         {/* Email Subscription Form Box */}
-        <div className="rounded-3xl p-8 sm:p-12 bg-white/[0.02] border border-white/10 relative overflow-hidden">
+        <div
+          ref={formBoxRef}
+          className="rounded-3xl p-8 sm:p-12 bg-white/[0.02] border border-white/10 relative overflow-hidden neon-border-box"
+        >
           <div className="max-w-xl mx-auto text-center">
             <h3 className="text-2xl sm:text-3xl font-black uppercase font-heading text-white tracking-wide">
               Never Miss A Drop
@@ -174,4 +253,3 @@ export function WhereToBuySection({ currentFlavor }: WhereToBuyProps) {
     </section>
   );
 }
-

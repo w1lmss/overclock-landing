@@ -3,6 +3,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { Flavor } from "@/types/flavor";
+import { HeroParticles } from "./HeroParticles";
 
 const CanScene = dynamic(
   () => import("./CanScene").then((mod) => mod.CanScene),
@@ -42,6 +43,9 @@ export function HeroSection({ currentFlavor }: HeroSectionProps) {
 
       {/* Subtle grid pattern overlay for high-tech aesthetic */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+
+      {/* Ambient floating glowing particles (Stage 3 per TZ) */}
+      <HeroParticles flavor={currentFlavor} />
 
       {/* Hero Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto flex flex-col items-center text-center">

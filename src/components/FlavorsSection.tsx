@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flavor, FLAVORS, FlavorId } from "@/types/flavor";
 import { CanGraphic } from "./CanGraphic";
 
@@ -13,8 +15,84 @@ export function FlavorsSection({
   currentFlavor,
   onSelectFlavor,
 }: FlavorsSectionProps) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const ctx = gsap.context(() => {
+      // Header reveal
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 35 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Tabs reveal
+      if (tabsRef.current) {
+        gsap.fromTo(
+          tabsRef.current,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            delay: 0.15,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: tabsRef.current,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      }
+
+      // Staggered cards reveal
+      cardsRef.current.forEach((card, index) => {
+        if (!card) return;
+        gsap.fromTo(
+          card,
+          { opacity: 0, y: prefersReducedMotion ? 0 : 45 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            delay: index * 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 88%",
+              toggleActions: "play none none reverse",
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="flavors"
       className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 border-t border-white/5 overflow-hidden"
     >
@@ -26,7 +104,7 @@ export function FlavorsSection({
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-14 sm:mb-20">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto mb-14 sm:mb-20">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-accent">
             Triple Formula
           </span>
@@ -39,7 +117,7 @@ export function FlavorsSection({
         </div>
 
         {/* Flavor Switcher Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
+        <div ref={tabsRef} className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
           {FLAVORS.map((flavor) => {
             const isSelected = flavor.id === currentFlavor.id;
             return (
@@ -73,11 +151,14 @@ export function FlavorsSection({
 
         {/* 3 Flavors Grid Showcase */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-          {FLAVORS.map((flavor) => {
+          {FLAVORS.map((flavor, index) => {
             const isActive = flavor.id === currentFlavor.id;
             return (
               <div
                 key={flavor.id}
+                ref={(el) => {
+                  cardsRef.current[index] = el;
+                }}
                 onClick={() => onSelectFlavor(flavor.id)}
                 className={`group relative rounded-3xl p-6 sm:p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-500 border ${
                   isActive
@@ -145,4 +226,3 @@ export function FlavorsSection({
     </section>
   );
 }
-

@@ -61,3 +61,4 @@ export function CanScene({ flavor, className = "" }: CanSceneProps) {
     </div>
   );
 }
+

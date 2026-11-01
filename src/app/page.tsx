@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FLAVORS, Flavor, FlavorId } from "@/types/flavor";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { FlavorsSection } from "@/components/FlavorsSection";
@@ -20,39 +21,41 @@ export default function Home() {
   };
 
   return (
-    <div
-      data-flavor={currentFlavor.id}
-      style={
-        {
-          "--accent": currentFlavor.color,
-          "--accent-glow": currentFlavor.glowColor,
-        } as React.CSSProperties
-      }
-      className="relative min-h-screen bg-[#0A0A0F] text-white transition-accent overflow-x-hidden"
-    >
-      {/* Top Navigation */}
-      <Navbar currentFlavor={currentFlavor} />
+    <SmoothScroll>
+      <div
+        data-flavor={currentFlavor.id}
+        style={
+          {
+            "--accent": currentFlavor.color,
+            "--accent-glow": currentFlavor.glowColor,
+          } as React.CSSProperties
+        }
+        className="relative min-h-screen bg-[#0A0A0F] text-white transition-accent overflow-x-hidden"
+      >
+        {/* Top Navigation */}
+        <Navbar currentFlavor={currentFlavor} />
 
-      {/* Main Content with 5 Blocks */}
-      <main className="flex flex-col w-full">
-        {/* 1. Hero */}
-        <HeroSection currentFlavor={currentFlavor} />
+        {/* Main Content with 5 Blocks */}
+        <main className="flex flex-col w-full">
+          {/* 1. Hero */}
+          <HeroSection currentFlavor={currentFlavor} />
 
-        {/* 2. Flavors */}
-        <FlavorsSection
-          currentFlavor={currentFlavor}
-          onSelectFlavor={handleSelectFlavor}
-        />
+          {/* 2. Flavors */}
+          <FlavorsSection
+            currentFlavor={currentFlavor}
+            onSelectFlavor={handleSelectFlavor}
+          />
 
-        {/* 3. Why OVERCLOCK */}
-        <WhySection currentFlavor={currentFlavor} />
+          {/* 3. Why OVERCLOCK (Pinned ScrollTrigger) */}
+          <WhySection currentFlavor={currentFlavor} />
 
-        {/* 4. Where to buy */}
-        <WhereToBuySection currentFlavor={currentFlavor} />
-      </main>
+          {/* 4. Where to buy */}
+          <WhereToBuySection currentFlavor={currentFlavor} />
+        </main>
 
-      {/* 5. Footer */}
-      <Footer />
-    </div>
+        {/* 5. Footer */}
+        <Footer />
+      </div>
+    </SmoothScroll>
   );
 }
